@@ -62,8 +62,6 @@ Adriano Cavalcanti, 2022
 
 <br/>
  
-## 🖥️ Layout
-![Imgem_no_Computador](https://user-images.githubusercontent.com/19610038/227809593-bb7dec60-49b5-44db-a50c-dfa1cdf13c02.png)        
 
 <br/>
  
@@ -73,7 +71,7 @@ Adriano Cavalcanti, 2022
 
 ## 🏴󠁳󠁯󠁢󠁲󠁿 Sobre     
 
-O **Fiori App Admin** é uma aplicação full stack web que busca uma lista de produtos no ECC usando CDS View e exibe na tela em forma de relatório. Está sendo construído no curso [SAP FIORI PRO](https://daniellubke.com "Site do curso SAP FIORI PRO").
+O **Fiori App Admin User** é uma aplicação full stack web que busca uma lista de usuáris no ECC usando SEGW  e exibe na tela em forma de relatório. Está sendo construído no curso [SAP FIORI PRO](https://daniellubke.com "Site do curso SAP FIORI PRO").
         
 <br/>        
         
