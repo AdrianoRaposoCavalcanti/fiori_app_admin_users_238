@@ -7,7 +7,7 @@
 |**Generation Platform**<br>SAP Business Application Studio|
 |**Template Used**<br>simple|
 |**Service Type**<br>SAP System (ABAP On Premise)|
-|**Service URL**<br>http://vm51.4hub.cloud:55100/sap/opu/odata/sap/ZSB_PRODUCAO_238
+|**Service URL**<br>http://vm51.4hub.cloud:55100/sap/opu/odata/sap/ZUSERS_238_SRV
 |**Module Name**<br>fiori_app_report_238|
 |**Application Title**<br>Fiori Report|
 |**Namespace**<br>br.com.gestao|

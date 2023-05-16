@@ -1,10 +1,9 @@
-<core:FragmentDefinition xmlns:m="sap.m" xmlns:core="sap.ui.core" xmlns:forms="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+<core:FragmentDefinition xmlns:m="sap.m" xmlns:core="sap.ui.core">
     
     <m:VBox id="vboxBasicInfo" class="sapUiSmallMargin">
 
         <sap.ui.layout.form:SimpleForm
             xmlns:sap.ui.layout.form="sap.ui.layout.form"
-            xmlns:sap.ui.core="sap.ui.core"
             id="formBasic"
             class="sapUxAPObjectPageSubSectionAlignContent"
             editable="false"
@@ -24,10 +23,19 @@
             singleContainerFullSize="false"
         >
             <sap.ui.layout.form:content>
-                <m:Label id="_IDGenLabel9_Basic" text="{i18n>sfCategory}" />
-                <m:Text id="_IDGenText5_Basic" text="{to_cat/Description}" class="sapMObjectNumberMedium" />
-                <m:Label id="_IDGenLabel10_Basic" text="{i18n>sfSupplier}" />
-                <m:Text id="_IDGenText6_Basic" text="{Supplierid} {Suppliername}" class="sapMObjectNumberMedium" />
+            			        <!-- Propriedade Nome Usuario -->
+						        <m:Label id="_IDGenLabel9" text="{i18n>sfNome}"/>
+                                <m:Text id="_IDGenText5" text="{Firstname} {Lastname}" class="sapMObjectNumberMedium"/>
+							
+                                <!-- Propriedade Email -->
+						        <m:Label id="_IDGenLabel10" text="{i18n>sfEmail}"/>
+                                <m:Text id="_IDGenText6" text="{Email}" class="sapMObjectNumberMedium"/>
+
+                                <!-- Propriedade Fone -->
+                                <m:Label id="_IDGenLabel11" text="{i18n>sfFone}"/>
+                                <m:Text id="_IDGenText7" text="{Fone}" class="sapMObjectNumberMedium"/>
+
+            
             </sap.ui.layout.form:content>
         </sap.ui.layout.form:SimpleForm>
 

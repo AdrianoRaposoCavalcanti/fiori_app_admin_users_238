@@ -1,14 +1,14 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/format/NumberFormat",
-    "br/com/gestao/fioriappadmin238/util/Formatter",
+    "br/com/gestao/fioriappusers238/util/Formatter",
     "sap/ui/core/Fragment",
     "sap/ui/model/json/JSONModel",
     "sap/ui/model/odata/ODataModel",
     "sap/m/MessageToast",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
-    "br/com/gestao/fioriappadmin238/util/Validator",
+    "br/com/gestao/fioriappusers238/util/Validator",
     "sap/ui/core/ValueState",
     "sap/m/MessageBox",
     "sap/m/BusyDialog"
@@ -20,7 +20,7 @@ sap.ui.define([
         NumberFormat, Formatter, Fragment, JSONModel, ODataModel, MessageToast, Filter, FilterOperator, Validator, ValueState, MessageBox, BusyDialog) {
         "use strict";
 
-        return Controller.extend("br.com.gestao.fioriappadmin238.controller.Detalhes", {
+        return Controller.extend("br.com.gestao.fioriappusers238.controller.Detalhes", {
 
             objFormatter: Formatter,
 
@@ -38,22 +38,20 @@ sap.ui.define([
                 });
 
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-                oRouter.getRoute("Detalhes").attachMatched(this.onBindingProdutoDetalhes, this);
+                oRouter.getRoute("Detalhes").attachMatched(this.onBindingUsuarioDetalhes, this);
 
                 debugger;
                 // 1 - Chamar a função onde irá fazer o carregamento dos fragments iniciais
                 this._formFragments = {};
 
                 this._showFormFragments("DisplayBasicInfo", "vboxViewBasicInfo");
-                this._showFormFragments("DisplayTechInfo", "vboxViewTechInfo");
+             //   this._showFormFragments("DisplayTechInfo", "vboxViewTechInfo");
 
 
             },
 
             //2- Recebe como parametro o nome do fragment e o nome do Vbox de destino
             _showFormFragments: function (sFragmentName, sVBoxName) {
-
-                debugger;
                 var objVBox = this.byId(sVBoxName);
                 objVBox.removeAllItems();
 
@@ -64,18 +62,16 @@ sap.ui.define([
 
             //3- Cria um objeto fragmet baseado no nome e adiciona em um objeto fragment com uma coleção de fragments
             _getFormAllItems: function (sFragmentName) {
-                debugger;
                 var oFormFragment = this._formFragments[sFragmentName];
                 var oView = this.getView();
 
                 if (!oFormFragment) {
                     oFormFragment = Fragment.load({
                         id: oView.getId(),
-                        name: "br.com.gestao.fioriappadmin238.frags." + sFragmentName,
-                        Controller: this
+                        name: "br.com.gestao.fioriappusers238.frags." + sFragmentName,
+                        controller: this
                     });
 
-                    debugger;
                     this._formFragments[sFragmentName] = oFormFragment;
 
                 }
@@ -83,23 +79,20 @@ sap.ui.define([
                 return oFormFragment;
             },
 
-            onBindingProdutoDetalhes: function (oEvent) {
+            onBindingUsuarioDetalhes: function (oEvent) {
                 //capiturando o parametro route detalhes (productId)
-                var oProduto = oEvent.getParameter("arguments").productId;
+                var oUsuario = oEvent.getParameter("arguments").userId;
                 //   debugger;
                 //Objeto referente a view Detalhes
                 var oView = this.getView();
 
-                // Criar um parâmetro de controle para redirecionamento da view após o Delete
+                //Criar um parametro de controle para redirecionamento da view após o Delete
+                this._bDelete = false;
 
-                 this._bDelete = false;   
-
-
-                var sURL = "/Produtos('" + oProduto + "')";
+                var sURL = "/UsersSet('" + oUsuario + "')";
 
                 oView.bindElement({
                     path: sURL,
-                    parameters: { expand: 'to_cat' },
                     events: {
                         change: this.onBindingChange.bind(this),
                         dataRequested: function () {
@@ -124,20 +117,39 @@ sap.ui.define([
                 //se não existir um elemento(registro) válido eu farei uma ação que é redirecionar para uma nova view.
                 if (!oElementBinding.getBoundContext()) {
 
-                    oRouter.getTargets().display("objNotFound");
-                    return;
+                    if (!this._bDelete){
+                        oRouter.getTargets().display("objNotFound");
+                        return;
+                    }
+
                 } else {
-                    this._oProduto = Object.assign({}, oElementBinding.getBoundContext().getObject());
+                    //Clonamos o registro atual
+                    debugger;
+                    this._oUsuario = Object.assign({}, oElementBinding.getBoundContext().getObject());
+                    
                 }
 
             },
             criarModel: function () {
-                // Model Produto
+                // Model Usuario
                 var oModel = new JSONModel();
-                this.getView().setModel(oModel, "MDL_Produto");
+                this.getView().setModel(oModel, "MDL_Usuario");
             },
 
             handleEditBtnPress: function (oEvent) {
+
+                this.criarModel();
+
+                // Atribui no objeto o registro clonado
+                var oModelUsuario = this.getView().getModel("MDL_Usuario");
+                oModelUsuario.setData(this._oUsuario);
+
+                //Recupera usuários
+                this.onGetUsuarios();
+
+                //Habilita a edição
+                this._HabilitaEdicao(true);
+
 
             },
             handleCancelPress: function () {
@@ -164,15 +176,17 @@ sap.ui.define([
 
                 // Habilitar/Desabilitar Abas (seções) das páginas               
                 oView.byId("Section1").setVisible(!bEdit);
-                oView.byId("Section2").setVisible(!bEdit);
+              //  oView.byId("Section2").setVisible(!bEdit);
                 oView.byId("Section3").setVisible(bEdit);
 
                 if (bEdit) {
-                    this._showFormFragments("Change", "vboxChangeProduct");
+                    this._showFormFragments("Change", "vboxChangeUser");
                 } else {
                     this._showFormFragments("DisplayBasicInfo", "vboxViewBasicInfo");
-                    this._showFormFragments("DisplayTechInfo", "vboxViewTechInfo");
+                 //   this._showFormFragments("DisplayTechInfo", "vboxViewTechInfo");
                 }
+
+              
             },
 
             onNavBack: function (oEvent) {
@@ -186,19 +200,19 @@ sap.ui.define([
                 //oRouter.getTargets().display("lista");
             },
 
-            onDelete: function (oEvent) {
-
-            },
-
             handleEditPress: function (oEvent) {
                 debugger;
 
                 //Criamos noss Model de produto
                 this.criarModel();
-
+             
                 //Atribui no objeto model o resgistro clonado
-                var oModelProduto = this.getView().getModel("MDL_Produto");
-                oModelProduto.setData(this._oProduto);
+                var oModelUsuario = this.getView().getModel("MDL_Usuario");
+                oModelUsuario.setData(this._oUsuario);
+          
+                //-------------Atualiza Changedat para data atual
+            //    var vDataAtual = this.objFormatter.formatDate(new Date()); 
+             //   oModelUsuario.setProperty("/Changedat",vDataAtual);
 
                 //Recupera os usuários
                 this.onGetUsuarios();
@@ -206,15 +220,16 @@ sap.ui.define([
                 //Habilita a edição
                 this._HabilitaEdicao(true);
 
-            },
-
- /*
-            onValida: function (oEvent) {
+              
 
             },
-  */ 
+
+            /*
+                       onValida: function (oEvent) {
+           
+                       },
+             */
             onGetUsuarios: function () {
-
                 var t = this;
                 var strEntity = "/sap/opu/odata/sap/ZSB_USERS_238";
 
@@ -254,7 +269,7 @@ sap.ui.define([
                 if (!this._CategoriaSearchHelp) {
                     this._CategoriaSearchHelp = Fragment.load({
                         id: oView.getId(),
-                        name: "br.com.gestao.fioriappadmin238.frags.SH_Categorias",
+                        name: "br.com.gestao.fioriappusers238.frags.SH_Categorias",
                         controller: this
                     }).then(function (oDialog) {
                         oView.addDependent(oDialog);
@@ -285,7 +300,7 @@ sap.ui.define([
                 var oModel = this.getView().getModel();
 
                 //Model onde o usuário realiza o preenchimento das informações de produto
-                var oModelProduto = this.getView().getModel("MDL_Produto");
+                var oModelUsuario = this.getView().getModel("MDL_Usuario");
 
 
                 //Realizar a chamada para o SAP
@@ -296,16 +311,16 @@ sap.ui.define([
                     success: function (oData, results) {
 
                         if (results.statusCode === 200) {
-                            oModelProduto.setProperty("/Supplierid", oData.Lifnr);
-                            oModelProduto.setProperty("/Suppliername", oData.Name1);
+                            oModelUsuario.setProperty("/Supplierid", oData.Lifnr);
+                            oModelUsuario.setProperty("/Suppliername", oData.Name1);
 
                         }
 
                     },
                     error: function (e) {
 
-                        oModelProduto.setProperty("/Supplierid", "");
-                        oModelProduto.setProperty("/Suppliername", "");
+                        oModelUsuario.setProperty("/Supplierid", "");
+                        oModelUsuario.setProperty("/Suppliername", "");
 
                         var oRet = JSON.parse(e.response.body);
                         MessageToast.show(oRet.error.message.value, {
@@ -338,8 +353,8 @@ sap.ui.define([
                 var validator = new Validator();
 
                 //Checar validação
-                if (validator.validate(this.byId("vboxChangeProduct"))) {
-                   this.onUpdate();
+                if (validator.validate(this.byId("vboxChangeUser"))) {
+                    this.onUpdate();
                 }
 
 
@@ -352,29 +367,29 @@ sap.ui.define([
             },
             onUpdate: function () {
 
-                debugger;
+
                 //1 - criando uma referencia do objeto model que está recebendo as inforamações do
                 //fragment 
-                var oModel = this.getView().getModel("MDL_Produto");
+                var oModel = this.getView().getModel("MDL_Usuario");
                 var objUpdate = oModel.getData();
                 var sPath = this.getView().getElementBinding().getPath();
 
                 //2 - Manipular propriedades 
                 //  objUpdate.Productid = this.geraID();
                 //objUpdate.Price = objUpdate.Price[0].toString();
-                objUpdate.Price = objUpdate.Price.toString();
-                objUpdate.Weightmeasure = objUpdate.Weightmeasure.toString();
-                objUpdate.Width = objUpdate.Width.toString();
-                objUpdate.Depth = objUpdate.Depth.toString();
-                objUpdate.Height = objUpdate.Height.toString();
-                //   objUpdate.Createdat = this.objFormatter.dateSAP(objUpdate.Createdat);
-                //  objUpdate.Currencycode = "BRL";
-                //  objUpdate.Userupdate = "";
-                objUpdate.Changedat = new Date().toISOString().substring(0, 19);
+               // objUpdate.Price = objUpdate.Price.toString();
+               // objUpdate.Weightmeasure = objUpdate.Weightmeasure.toString();
+               // objUpdate.Width = objUpdate.Width.toString();
+               // objUpdate.Depth = objUpdate.Depth.toString();
+               // objUpdate.Height = objUpdate.Height.toString();
+               // objUpdate.Changedat = new Date().toISOString().substring(0, 19);
 
-
-                delete objUpdate.to_cat;
+                debugger;
+              //  delete objUpdate.to_cat;
                 delete objUpdate.__metadata;
+               // delete objUpdate.to_user_create;
+               // delete objUpdate.to_user_update;
+
 
                 //Criando uma referencia do arquivo i18n
                 var bundle = this.getView().getModel("i18n").getResourceBundle();
@@ -383,13 +398,13 @@ sap.ui.define([
                 var t = this;
 
                 // 4 - Criar um objeto model referencia do model default (OData)
-                // Dentro do manifest -- mainService - que é a  "uri": "/sap/opu/odata/sap/ZSB_PRODUCAO_238/",
-                var oModelProduto = this.getView().getModel();
-                
-                 debugger;
+                // Dentro do manifest -- mainService - que é a  "uri": "/sap/opu/odata/sap/ZUSERS_238_SRV/",
+                var oModelUsuario = this.getView().getModel();
+
+                debugger;
 
                 MessageBox.confirm(
-                    bundle.getText("updateDialogMsg", [objUpdate.Productid]),
+                    bundle.getText("updateDialogMsg", [objUpdate.Userid]),
                     function (oAction) { //função de disparo do insert
 
                         //Verificando se o usuário confirmou ou não a operação
@@ -405,24 +420,25 @@ sap.ui.define([
                             setTimeout(function () {
 
                                 //Realizar a chamda para o SAP    
-                                var oModelSend = new ODataModel(oModelProduto.sServiceUrl, true);
+                                var oModelSend = new ODataModel(oModelUsuario.sServiceUrl, true);
                                 debugger;
                                 oModelSend.update(sPath, objUpdate, null,
                                     function (d, r) { //Função retorno Sucesso
-                                      
+
                                         debugger;
-                                      
+
                                         if (r.statusCode === 204) {
 
+                                            //Fechar o BusyDialog
                                             t._oBusyDialog.close();
 
-                                            MessageBox.success(bundle.getText("updateDialogSucess", [objUpdate.Productid]));
+                                            MessageBox.success(bundle.getText("updateDialogSucess", [objUpdate.Userid]));
 
                                             //iremos fechar o objeto dialog do fragment
                                             //Dar um refresh no model default
                                             //  t.getView().getModel().refresh();
 
-                                            //Fechar o BusyDialog
+                                            //Voltar para somente leitura
                                             t.handleCancelPress();
 
                                         }
@@ -431,15 +447,11 @@ sap.ui.define([
 
                                         //Fechar o BusyDialog
                                         t._oBusyDialog.close();
-
                                         var oRet = JSON.parse(e.response.body);
-                                        //  var test = JSON.parse(e.response.body);
-
                                         MessageToast.show(oRet.error.message.value, {
                                             duration: 4000
 
                                         });
-
 
                                     });
 
@@ -448,7 +460,96 @@ sap.ui.define([
                             }, 2000);
                         }
                     },
-                    //   bundle.getText("insertDialogTitle") //exibe o titulo do Dialog
+                    bundle.getText("updateDialogTitle") //exibe o titulo do Dialog
+                );
+
+
+            },
+            onDelete: function () {
+                debugger;
+                //Acessando o registro.
+                var objDelete = this.getView().getElementBinding().getBoundContext().getObject();
+                var sPath = this.getView().getElementBinding().getPath();
+
+                //Criando uma referencia do arquivo i18n
+                var bundle = this.getView().getModel("i18n").getResourceBundle();
+
+                //Variavel contexto da View
+                var t = this;
+
+                // 4 - Criar um objeto model referencia do model default (OData)
+                // Dentro do manifest -- mainService - que é a  "uri": "/sap/opu/odata/sap/ZUSERS_238_SRV/",
+                var oModelUsuario = this.getView().getModel();
+                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+
+                debugger;
+
+                MessageBox.confirm(
+                    bundle.getText("deleteDialogMsg", [objDelete.Userid]),
+                    function (oAction) { //função de disparo do insert
+
+                        //Verificando se o usuário confirmou ou não a operação
+                        if (MessageBox.Action.OK === oAction) {
+
+                            //Criamos um BusyDialog
+                            t._oBusyDialog = new BusyDialog({
+                                text: bundle.getText("Sendind")
+                            });
+
+                            t._oBusyDialog.open();
+
+                            setTimeout(function () {
+
+                                //Realizar a chamda para o SAP    
+                                var oModelSend = new ODataModel(oModelUsuario.sServiceUrl, true);
+                                debugger;
+                                oModelSend.remove(sPath, {
+                                    success: function (d, r) { //Função retorno Sucesso
+
+                                        debugger;
+
+                                        if (r.statusCode === 204) {
+
+                                            //Fechar o BusyDialog
+                                            t._oBusyDialog.close();
+
+
+                                            //setar o parâmetro de Delete
+
+                                            t._bDelete = true;
+
+                                            MessageBox["information"](bundle.getText("deleteDialogSucess", [objDelete.Userid]), {
+                                                actions: [MessageBox.Action.OK],
+                                                onClose: function (oAction) {
+                                                    if (oAction === MessageBox.Action.OK) {
+                                                        t.getView().getModel().refresh();
+                                                        oRouter.navTo("Lista");
+                                                    }
+                                                }.bind(this)
+
+                                            });
+                                        }
+
+                                    },
+                                    erro: function (e) {  //Função retorno Erro
+
+                                        //Fechar o BusyDialog
+                                        t._oBusyDialog.close();
+                                        var oRet = JSON.parse(e.response.body);
+                                        MessageToast.show(oRet.error.message.value, {
+                                            duration: 4000
+
+                                        });
+
+                                    }
+
+                                });
+
+
+                            }, 2000);
+                        }
+                    },
+                    bundle.getText("deleteDialogTitle") //exibe o titulo do Dialog
                 );
 
 

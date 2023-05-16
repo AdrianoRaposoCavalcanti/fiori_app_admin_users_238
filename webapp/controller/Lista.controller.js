@@ -4,11 +4,11 @@ sap.ui.define([
     "sap/ui/model/FilterOperator",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
-    "br/com/gestao/fioriappadmin238/util/Formatter",
+    "br/com/gestao/fioriappusers238/util/Formatter",
     "sap/ui/core/Fragment",
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/ValueState",
-    "br/com/gestao/fioriappadmin238/util/Validator",
+    "br/com/gestao/fioriappusers238/util/Validator",
     "sap/m/BusyDialog",
     "sap/ui/model/odata/ODataModel",
     "sap/ui/core/mvc/JSONView",
@@ -40,11 +40,12 @@ sap.ui.define([
         Category) {
         "use strict";
 
-        return Controller.extend("br.com.gestao.fioriappadmin238.controller.Lista", {
+        return Controller.extend("br.com.gestao.fioriappusers238.controller.Lista", {
 
             objFormatter: Formatter,
-            onInit: function () {
 
+            onInit: function () {
+                debugger;
 
                 sap.ui.getCore().attachValidationError(function (oEvent) {
                     //   
@@ -68,23 +69,31 @@ sap.ui.define([
             criarModel: function () {
                 // Model Produto
                 var oModel = new JSONModel();
-                this.getView().setModel(oModel, "MDL_Produto");
+                this.getView().setModel(oModel, "MDL_Usuario");
             },
 
             onSearch: function (evt) {
 
+                debugger;
 
                 //Capturando individualmente cada objeto Filter Bar
                 //    
-                var oProdutoInput = this.getView().byId("productIdInput");
-                var oProdutoNomeInput = this.getView().byId("productNameInput");
-                var oProdutoCategoriaInput = this.getView().byId("productCartegoryInput");
+                var oUsuarioInput = this.getView().byId("usuarioIdInput");
+                var oUsuarioPrimeiroNomeInput = this.getView().byId("usuarioFirstNameInput");
+                var oUsuarioEmailInput = this.getView().byId("emailInput");
 
 
                 var objFilter = { filters: [], and: true };
-                objFilter.filters.push(new Filter("Productid", FilterOperator.Contains, oProdutoInput.getValue()));
-                objFilter.filters.push(new Filter("Name", FilterOperator.Contains, oProdutoNomeInput.getValue()));
-                objFilter.filters.push(new Filter("Category", FilterOperator.Contains, oProdutoCategoriaInput.getValue()));
+
+                if (oUsuarioInput.getValue()) {
+                    objFilter.filters.push(new Filter("Userid", FilterOperator.EQ, oUsuarioInput.getValue()));
+                }
+                if (oUsuarioPrimeiroNomeInput.getValue()) {
+                    objFilter.filters.push(new Filter("Firstname", FilterOperator.Contains, oUsuarioPrimeiroNomeInput.getValue()));
+                }
+                if (oUsuarioEmailInput.getValue()) {
+                    objFilter.filters.push(new Filter("Email", FilterOperator.Contains, oUsuarioEmailInput.getValue()));
+                }
 
                 var oFilter = new Filter(objFilter);
 
@@ -101,7 +110,7 @@ sap.ui.define([
 
 
                 //Criação do objeto Table e acesso e agregação items onde sabemos qual a entidade onde será aplicado o filtro
-                var oTable = this.getView().byId("tableProdutos");
+                var oTable = this.getView().byId("tableUsuarios");
                 var binding = oTable.getBinding("items");
 
                 //É aplicado o filtro para oDatabinding
@@ -135,10 +144,10 @@ sap.ui.define([
                 //getBindingContext() - É a linha da tabela(registro) que esta sendo acessada para o click
                 //getProperty() Acessa a propriendade da tabela ou seja. o campo que será passado como parametro
 
-                //Passo 1 - Captura do valor do produto
-                var oProdutoId = oEvent.getSource().getBindingContext().getProperty("Productid");
+                //Passo 1 - Captura do valor do usuario
+                var oUserId = oEvent.getSource().getBindingContext().getProperty("Userid");
 
-                //Passo 2 - Captura do valor do produto
+                //Passo 2 - Captura do valor do usuario
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
 
                 //  MessageToast.show("Entrei aqui");
@@ -147,7 +156,7 @@ sap.ui.define([
                 //  this.getView().setBusy(true);
 
                 oRouter.navTo("Detalhes", {
-                    productId: oProdutoId
+                    userId: oUserId
                 });
 
                 // setTimeout(() => {
@@ -166,7 +175,6 @@ sap.ui.define([
             },
 
             onCategoria: function (oEvent) {
-                debugger;
                 this._oInput = oEvent.getSource().getId();
                 var oView = this.getView();
 
@@ -174,7 +182,7 @@ sap.ui.define([
                 if (!this._CategoriaSearchHelp) {
                     this._CategoriaSearchHelp = Fragment.load({
                         id: oView.getId(),
-                        name: "br.com.gestao.fioriappadmin238.frags.SH_Categorias2",
+                        name: "br.com.gestao.fioriappusers238.frags.SH_Categorias",
                         controller: this
                     }).then(function (oDialog) {
                         oView.addDependent(oDialog);
@@ -183,9 +191,8 @@ sap.ui.define([
                 }
 
                 this._CategoriaSearchHelp.then(function (oDialog) {
-                    debugger;
                     //Limpando o filtro de categorias na abertura do fragment
-                    //   oDialog.getBinding("items").filter([]);
+                    oDialog.getBinding("items").filter([]);
 
                     //Abertura do fragment
                     oDialog.open();
@@ -209,23 +216,33 @@ sap.ui.define([
             },
 
 
-            onNovoProduto: function (oEvent) {
+            onNovoUsuario: function (oEvent) {
                 //      
                 //  this._oInput = oEvent.getSource().getId();
 
-                //Criar o Model Produto
-                this.criarModel();
+                debugger;
+
+                if (this.getView().getModel("MDL_Usuario")) {
+
+                    if (this.getView().getModel("MDL_Usuario").bDestroyed == true) {
+                        //Criar o Model Produto
+                        this.criarModel();
+                    }
+                } else {
+
+                    this.criarModel();
+
+                }
 
                 var t = this;
 
                 var oView = this.getView();
 
-
                 //Verifico se o objeto fragment existe. Se não, crio e adiciono na view 
-                if (!this._Produto) {
-                    this._Produto = Fragment.load({
+                if (!this._Usuario) {
+                    this._Usuario = Fragment.load({
                         id: oView.getId(),
-                        name: "br.com.gestao.fioriappadmin238.frags.Insert",
+                        name: "br.com.gestao.fioriappusers238.frags.Insert",
                         controller: this
                     }).then(function (oDialog) {
                         oView.addDependent(oDialog);
@@ -234,7 +251,8 @@ sap.ui.define([
 
                 }
 
-                this._Produto.then(function (oDialog) {
+                this._Usuario.then(function (oDialog) {
+                    debugger;
 
                     //Limpando o filtro de categorias na abertura do fragment
 
@@ -244,16 +262,12 @@ sap.ui.define([
                     //Abertura do fragment
                     oDialog.open();
 
-                    // t.onGetUsuarios();
-                    t.getReadOpcoes();
+                    t.onGetUsuarios();
+                    //  t.getReadOpcoes();
 
                 });
 
             },
-
-
-
-
 
 
             onValueHelpSearch: function (oEvent) {
@@ -275,9 +289,8 @@ sap.ui.define([
             },
 
             onValueHelpClose: function (oEvent) {
-                debugger;
                 var oSelectedItem = oEvent.getParameter("selectedItem");
-                //  var oSelectedItem = oEvent.getParameter("selectedItem").getBindingContext().getObject();
+                //    var oSelectedItem = oEvent.getParameter("selectedItem").getBindingContext().getObject();
                 var oImput = null;
 
                 if (this.byId(this._oInput)) {
@@ -292,11 +305,12 @@ sap.ui.define([
                     return;
                 }
 
-                //  oImput.setValue(oSelectedItem.getTitle());
-                oImput.setValue(oSelectedItem.Category);
+                oImput.setValue(oSelectedItem.getTitle());
+                //  oImput.setValue(oSelectedItem.Category);
 
 
             },
+
             handleSelectChange: function (oEvent) {
                 var type = oEvent.getParameter("selectedItem").getKey();
                 this.byId("ProductList").getItems().forEach(function (item) {
@@ -339,7 +353,17 @@ sap.ui.define([
                 //  oEvent.getSource().getParent().close();
                 // Funciona
                 // this.getView().byId("_IDGenDialog1").close();
-                this._Produto.then(function (oDialog) {
+
+                var oView = this.getView();
+
+                this._Usuario.then(function (oDialog) {
+
+                    //-------------------------------------
+                    // var vname = oView.byId("_IDGenInput4");
+
+                    //---------------Guardar dados no Model
+                    //     var voModel = oView.getModel("MDL_Usuario");
+                    //    oView.setModel(voModel);
 
                     //Fechamento do fragment
                     oDialog.close();
@@ -354,7 +378,7 @@ sap.ui.define([
                 var validator = new Validator();
 
                 //Checar validação
-                if (validator.validate(this.byId("_IDGenDialog1")) || 1==1) {
+                if (validator.validate(this.byId("_IDGenDialog1")) || 1 == 1) {
 
                     this.onInsert();
                     // console.log("Tudo ok!");
@@ -377,33 +401,23 @@ sap.ui.define([
 
                 //1 - criando uma referencia do objeto model que está recebendo as inforamações do
                 //fragment 
-                var oModel = this.getView().getModel("MDL_Produto");
+                var oModel = this.getView().getModel("MDL_Usuario");
                 var objNovo = oModel.getData();
-
-                //2 - Manipular propriedades 
-                objNovo.Productid = this.geraID();
-                objNovo.Price = objNovo.Price[0].toString();
-                objNovo.Weightmeasure = objNovo.Weightmeasure.toString();
-                objNovo.Width = objNovo.Width.toString();
-                objNovo.Depth = objNovo.Depth.toString();
-                objNovo.Height = objNovo.Height.toString();
-                objNovo.Createdat = this.objFormatter.dateSAP(objNovo.Createdat);
-                objNovo.Currencycode = "BRL";
-                objNovo.Userupdate = "";
-
-
-                //Criando uma referencia do arquivo i18n
+                
+                 //2 Criando uma referencia do arquivo i18n
                 var bundle = this.getView().getModel("i18n").getResourceBundle();
 
-                //Variavel contexto da View
+                //3 - Variavel contexto da View
                 var t = this;
 
 
                 // 4 - Criar um objeto model referencia do model default (OData)
 
-                // Dentro do manifest -- mainService - que é a  "uri": "/sap/opu/odata/sap/ZSB_PRODUCAO_238/",
-                var oModelProduto = this.getView().getModel();
+                // Dentro do manifest -- mainService - que é a  "uri": "/sap/opu/odata/sap/ZUSERS_238_SRV/",
+                var oModelUsuario = this.getView().getModel();
 
+
+                debugger;
                 MessageBox.confirm(
                     bundle.getText("insertDialogMsg"),
                     function (oAction) { //função de disparo do insert
@@ -423,13 +437,13 @@ sap.ui.define([
                             setTimeout(function () {
 
                                 //Realizar a chamda para o SAP    
-                                var oModelSend = new ODataModel(oModelProduto.sServiceUrl, true);
+                                var oModelSend = new ODataModel(oModelUsuario.sServiceUrl, true);
 
-                                oModelSend.create("Produtos", objNovo, null,
+                                oModelSend.create("UsersSet", objNovo, null,
                                     function (d, r) { //Função retorno Sucesso
                                         if (r.statusCode === 201) {
 
-                                            MessageToast.show(bundle.getText("insertDialogSucess", [objNovo.Productid]), {
+                                            MessageToast.show(bundle.getText("insertDialogSucess", [objNovo.Userid]), {
                                                 duration: 4000
                                             });
 
@@ -439,6 +453,14 @@ sap.ui.define([
                                             //Dar um refresh no model default
                                             t.getView().getModel().refresh();
 
+                                            debugger;
+                                            t.getView().getModel("MDL_Usuario").destroy();
+
+                                            //  t.getView().getModel("MDL_Usuario").setData(null);
+                                            //  t.getView().getModel("MDL_Usuario").refresh();
+                                            //  this.criarModel();
+                                            //sap.ui.getCore().getModel("MDL_Usuario").refresh(true);
+
                                             //Fechar o BusyDialog
 
                                             t._oBusyDialog.close();
@@ -446,7 +468,7 @@ sap.ui.define([
                                         }
 
                                     }, function (e) {  //Função retorno Erro
-
+                                        debugger;
                                         //Fechar o BusyDialog
                                         t._oBusyDialog.close();
 
@@ -488,9 +510,9 @@ sap.ui.define([
             },
 
             OncliAgora: function (oEvent) {
-            //    MessageBox.information("Estou aqui");
+                //    MessageBox.information("Estou aqui");
                 debugger;
-              //  var oSelectedItem = oEvent.getParameter("selectedItem");
+                //  var oSelectedItem = oEvent.getParameter("selectedItem");
                 var oSelectedItem = oEvent.getParameter("selectedItem").getBindingContext().getObject();
                 var oImput = null;
 
@@ -512,7 +534,6 @@ sap.ui.define([
 
             //Capturar a coleção de usuarios de um novo serviço oData 
             onGetUsuarios: function () {
-
                 var t = this;
                 var strEntity = "/sap/opu/odata/sap/ZSB_USERS_238";
 
@@ -554,7 +575,7 @@ sap.ui.define([
                 var oModel = this.getView().getModel();
 
                 //Model onde o usuário realiza o preenchimento das informações de produto
-                var oModelProduto = this.getView().getModel("MDL_Produto");
+                var oModelProduto = this.getView().getModel("MDL_Usuario");
 
 
                 //Realizar a chamada para o SAP
@@ -603,8 +624,6 @@ sap.ui.define([
             },
             getReadOpcoes: function () {
 
-                debugger;
-
                 // Item 1 - Chamada via URL
 
                 var sElement = "/Produtos";
@@ -634,7 +653,6 @@ sap.ui.define([
                     urlParameters: {
 
                         $expand: "to_cat"
-
                     },
 
                     success: function (oData, results) {
@@ -659,9 +677,25 @@ sap.ui.define([
 
                 });
 
-            }
+            },
 
+            dataAtual: function (oEvent) {
+                debugger;
+              
+                var oModel = new JSONModel();
+                this.getView().setModel(oModel, "MDL_Usuario");
+                oModel.setData({
+                    Createdat: new Date()
+                });
+            },
 
-
+            upperCaseA: function (oEvent) {
+                debugger;
+                var oValue = oEvent.getParameter("value"),
+                    oValueUpper = oEvent.getParameter("value").toUpperCase();
+                if (oValue != oValueUpper) {
+                    oEvent.getSource().setValue(oValueUpper);
+                }
+            },
         });
     });

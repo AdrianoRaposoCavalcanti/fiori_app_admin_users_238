@@ -1,7 +1,7 @@
 {
     "_version": "1.42.0",
     "sap.app": {
-        "id": "br.com.gestao.fioriappadmin238",
+        "id": "br.com.gestao.fioriappusers238",
         "type": "application",
         "i18n": "i18n/i18n.properties",
         "applicationVersion": {
@@ -17,7 +17,7 @@
         },
         "dataSources": {
             "mainService": {
-                "uri": "/sap/opu/odata/sap/ZSB_PRODUCAO_238/",
+                "uri": "/sap/opu/odata/sap/ZUSERS_238_SRV/",
                 "type": "OData",
                 "settings": {
                     "odataVersion": "2.0",
@@ -28,7 +28,7 @@
                 }
             },
             "mainService_Annotation": {
-                "uri": "/destinations/S4_Hana_Treinamento/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZSB_PRODUCAO_238_VAN',Version='0001')/$value/",
+                "uri": "/destinations/S4_Hana_Treinamento/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZUSERS_238_SRV_VAN',Version='0001')/$value/",
                 "type": "ODataAnnotation",
                 "settings": {
                     "localUri": "localService/mainService_Annotation.xml"
@@ -75,7 +75,7 @@
             "i18n": {
                 "type": "sap.ui.model.resource.ResourceModel",
                 "settings": {
-                    "bundleName": "br.com.gestao.fioriappadmin238.i18n.i18n"
+                    "bundleName": "br.com.gestao.fioriappusers238.i18n.i18n"
                 }
             },
             "": {
@@ -100,7 +100,7 @@
                 "routerClass": "sap.m.routing.Router",
                 "viewType": "XML",
                 "async": true,
-                "viewPath": "br.com.gestao.fioriappadmin238.view",
+                "viewPath": "br.com.gestao.fioriappusers238.view",
                 "controlAggregation": "pages",
                 "controlId": "appID",
                 "clearControlAggregation": false,
@@ -125,7 +125,7 @@
                 },
                 {
                     "name": "Detalhes",
-                    "pattern": "detalhes/{productId}",
+                    "pattern": "detalhes/{userId}",
                     "target": [
                         "detalhes"
                     ]
@@ -169,7 +169,7 @@
           
         },
         "rootView": {
-            "viewName": "br.com.gestao.fioriappadmin238.view.App",
+            "viewName": "br.com.gestao.fioriappusers238.view.App",
             "type": "XML",
             "async": true,
             "id": "App"

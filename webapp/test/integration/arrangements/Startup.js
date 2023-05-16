@@ -3,7 +3,7 @@ sap.ui.define([
 ], function (Opa5) {
 	"use strict";
 
-	return Opa5.extend("br.com.gestao.fioriappadmin238.test.integration.arrangements.Startup", {
+	return Opa5.extend("br.com.gestao.fioriappusers238.test.integration.arrangements.Startup", {
 
 		iStartMyApp: function (oOptionsParameter) {
 			var oOptions = oOptionsParameter || {};
@@ -14,7 +14,7 @@ sap.ui.define([
 			// start the app UI component
 			this.iStartMyUIComponent({
 				componentConfig: {
-					name: "br.com.gestao.fioriappadmin238",
+					name: "br.com.gestao.fioriappusers238",
 					async: true
 				},
 				hash: oOptions.hash,

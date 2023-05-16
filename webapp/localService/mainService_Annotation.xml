@@ -18,8 +18,8 @@
     <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='')/$value">
         <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
     </edmx:Reference>
-    <edmx:Reference Uri="../../../sap/zsb_producao_238/$metadata">
-        <edmx:Include Namespace="ZSB_PRODUCAO_238" Alias="SAP"/>
+    <edmx:Reference Uri="../../../sap/ZUSERS_238_SRV/$metadata">
+        <edmx:Include Namespace="ZUSERS_238_SRV" Alias="SAP"/>
     </edmx:Reference>
     <edmx:DataServices>
         <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm"/>

@@ -1,4 +1,4 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:semtc="sap.f.semantic" xmlns:fb="sap.ui.comp.filterbar" xmlns:core="sap.ui.core" controllerName="br.com.gestao.fioriappadmin238.controller.Lista" displayBlock="true">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:semtc="sap.f.semantic" xmlns:fb="sap.ui.comp.filterbar" xmlns:core="sap.ui.core" controllerName="br.com.gestao.fioriappusers238.controller.Lista" displayBlock="true">
     <Shell id="shell">
         <App id="app">
             <Page id="page" title="{i18n>title}">
@@ -11,20 +11,20 @@
                         <semtc:headerContent>
                             <fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad" showGoOnFB="true">
                                 <fb:filterGroupItems>
-                                    <fb:FilterGroupItem label="{i18n>fgitemProduto}" name="Produto ID" labelTooltip="{i18n>fgitemProdutoTootip}" visibleInFilterBar="true" groupTitle="{i18n>fgitemProdutoGroup}" groupName="principal" id="item0">
+                                    <fb:FilterGroupItem label="{i18n>fgitemUsuarioid}" name="Usuario ID" labelTooltip="{i18n>fgitemUsuarioidTootip}" visibleInFilterBar="true" groupTitle="{i18n>fgitemUsuarioidGroup}" groupName="principal" id="item0">
                                         <fb:control>
-                                            <Input width="100%" placeholder="{i18n>fgitemProdutoplaceholder}" id="productIdInput"/>
+                                            <Input width="100%" placeholder="{i18n>fgitemUsuarioidPlaceholder}" id="usuarioIdInput"/>
                                         </fb:control>
                                     </fb:FilterGroupItem>
 
-                                    <fb:FilterGroupItem label="{i18n>fgitemNomeProduto}" name="Nome Produto" labelTooltip="{i18n>fgitemNomeProdutoTootip}" visibleInFilterBar="true" groupTitle="{i18n>fgitemNomeProdutoGroup}" groupName="Principal" id="item1">
+                                    <fb:FilterGroupItem label="{i18n>fgitemNomeUsuario}" name="Primeiro Nome" labelTooltip="{i18n>fgitemNomeUsuarioTootip}" visibleInFilterBar="true" groupTitle="{i18n>fgitemNomeUsuarioGroup}" groupName="Principal" id="item1">
                                         <fb:control>
-                                            <Input width="100%" placeholder="{i18n>fgitemNomeProdutoplaceholder}" id="productNameInput"/>
+                                            <Input width="100%" placeholder="{i18n>fgitemNomeUsuarioPlaceholder}" id="usuarioFirstNameInput"/>
                                         </fb:control>
                                     </fb:FilterGroupItem>
-                                        <fb:FilterGroupItem id="_IDGenFilterGroupItem1" label="{i18n>fgitemCategoria}" name="Categoria Produto" labelTooltip="{i18n>fgitemCategoriaTootip}" visibleInFilterBar="true" groupTitle="{i18n>fgitemCategoriaGroup}" groupName="Principal">
+                                        <fb:FilterGroupItem id="_IDGenFilterGroupItem1" label="{i18n>fgitemEmail}" name="Email" labelTooltip="{i18n>fgitemEmailTootip}" visibleInFilterBar="true" groupTitle="{i18n>fgitemEmailGroup}" groupName="Principal">
                                             <fb:control>
-                                                <Input id="productCartegoryInput" width="100%" placeholder="{i18n>fgitemCategoriaplaceholder}" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="onCategoria"/>
+                                                <Input id="emailInput" width="100%" placeholder="{i18n>fgitemEmailPlaceholder}" />
                                             </fb:control>
                                         </fb:FilterGroupItem>
 
@@ -36,7 +36,7 @@
 
                         <semtc:titleCustomTextActions>
 
-                            <Button xmlns="sap.m" text="{i18n>btnNovo}" id="button0" press="onNovoProduto"   icon="sap-icon://add"/>
+                            <Button xmlns="sap.m" text="{i18n>btnNovo}" id="button0" press="onNovoUsuario"   icon="sap-icon://add"/>
 
                         </semtc:titleCustomTextActions>
 
@@ -45,90 +45,54 @@
                         <semtc:content>
                             <!--{path: '/Produtos', parameters:{expand : 'to_cat'}}-->
                             <!--{/Produtos}-->
-                            <Table noDataText="{i18n>tbNoData}" id="tableProdutos" items="{path: '/Produtos' , parameters:{expand : 'to_cat'}}">
+                            <Table noDataText="{i18n>tbNoData}" id="tableUsuarios" items="{/UsersSet}">
                                 <items>
                                     <ColumnListItem press="onSelectedItem" type="Active" id="item0_1668791164165">
                                         <cells>
                                             <sap.ui.core:Icon xmlns:sap.ui.core="sap.ui.core" src="sap-icon://product" size="3rem" id="icon0"/>
 
-                                            <Text xmlns="sap.m" text="{Productid}" id="text9"/>
+                                            <Text xmlns="sap.m" text="{Userid}" id="text9"/>
 
-                                            <ObjectIdentifier xmlns="sap.m" title="{Name}" text="{Description}" id="identifier0"/>
+                                            <Text xmlns="sap.m" text="{Firstname} {Lastname}" id="text11_1669054707295"/>
 
-                                            <Text xmlns="sap.m" text="{to_cat/Description}" id="text11_1669054707295"/>
+                                            <Text xmlns="sap.m" text="{Email}" id="text13_1669054821491"/>
 
-                                            <Text xmlns="sap.m" text="{Supplierid}" id="text12_1669054813587"/>
-
-                                            <Text xmlns="sap.m" text="{Measureunit}" id="text13_1669054821491"/>
-
-                                            <!--{Price}-->
-                                            <ObjectNumber xmlns="sap.m" number="{ parts: [{path:'Price'}, {path:'Currencycode'}], type:'sap.ui.model.type.Currency', formatOptions: {showMeasure: false}}" unit="{Currencycode}" id="number0" state="Success"/>
-
-                                            <ObjectStatus xmlns="sap.m" text="{path:'Status', formatter:'.objFormatter.statusProdutos' }" state="{path:'Status', formatter:'.objFormatter.stateProdutos' }" id="status0" icon="{path:'Status', formatter:'.objFormatter.iconProdutos' }"/>
-
-                                            <!--{ parts: [{path:'Createdat'}], formatter:'.formatDate' } Quando tenho um ou mais parametros  -->
-                                            <!--{ path:'Createdat', formatter:'.formatDate' } Quando tenho um parametro-->
-
-                                            <!-- {Createdat} -->
-                                            <Text xmlns="sap.m" text="{ parts: [{path:'Createdat'}], formatter:'.objFormatter.formatDate' }" id="text14_1669056085632"/>
+                                            <Text xmlns="sap.m" text="{Fone}" id="text14_1669056085632"/>
                                         </cells>
                                     </ColumnListItem>
                                 </items>
 
                                 <columns>
-                                    <Column id="column0">
+                                    <Column id="column0" width="7em">
                                         <header>
                                             <Label text="{i18n>tbcolumnLogo}" id="label0"/>
                                         </header>
                                     </Column>
 
-                                    <Column id="column1">
+                                    <Column id="column1" width="12em">
                                         <header>
-                                            <Label text="{i18n>tbcolumnProdutoID}" id="label1"/>
+                                            <Label text="{i18n>tbcolumnUserId}" id="label1"/>
                                         </header>
                                     </Column>
 
-                                    <Column id="column2" width="16em">
+                                    <Column id="column2" width="12em">
                                         <header>
                                             <Label text="{i18n>tbcolumnNome}" id="label2"/>
                                         </header>
                                     </Column>
 
-                                    <Column id="column0_1669042580706">
+                                    <Column id="column0_1669042580706" width="15em">
                                         <header>
-                                            <Text text="{i18n>tbcolumnCategoria}" id="text9_1669042580706"/>
+                                            <Text text="{i18n>tbcolumnEmail}" id="text9_1669042580706"/>
                                         </header>
                                     </Column>
 
-                                    <Column id="column1_1669042593442" width="8em">
+                                    <Column id="column1_1669042593442" width="15em">
                                         <header>
-                                            <Text text="{i18n>tbcolumnFornecedorId}" id="text10_1669042593441"/>
+                                            <Text text="{i18n>tbcolumnFone}" id="text10_1669042593441"/>
                                         </header>
                                     </Column>
-
-                                    <Column id="column2_1669042605953" hAlign="Center">
-                                        <header>
-                                            <Text text="{i18n>tbcolumnUnMedia}" id="text11"/>
-                                        </header>
-                                    </Column>
-
-                                    <Column id="column3">
-                                        <header>
-                                            <Text text="{i18n>tbcolumnPreco}" id="text12"/>
-                                        </header>
-                                    </Column>
-
-                                    <Column id="column4">
-                                        <header>
-                                            <Text text="{i18n>tbcolumnStatus}" id="text13"/>
-                                        </header>
-                                    </Column>
-
-                                    <Column id="column5" hAlign="Center">
-                                        <header>
-                                            <Text text="{i18n>tbcolumnDtCriacao}" id="text14"/>
-                                        </header>
-                                    </Column>
+                                   
                                 </columns>
                             </Table>
                         </semtc:content>
